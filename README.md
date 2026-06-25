@@ -12,7 +12,7 @@ The game loop is divided into three crucial phases:
 2. **Planning (Time-Attack):** The player has 90 seconds to mentally reconstruct the network (which is only partially visible) and sequentially select the routes to reach their destination.
 3. **Execution:** The application algorithmically validates the path. If valid, the train departs: at each stop, the player faces random events (positive or negative) that will affect their final coin score.
 
-## 💻 Tech Stack
+## Tech Stack
 
 | Component | Technologies Used |
 | --- | --- |
@@ -30,7 +30,7 @@ The game loop is divided into three crucial phases:
 * **Secure and Protected APIs:** Express-based backend architecture with route protection middleware. Access to gameplay features and the leaderboard is strictly limited to authenticated users.
 * **Global Leaderboard:** Persistent score tracking system in the SQLite database, with data extraction and sorting of the best results for the global ranking.
 
-## 📸 Screenshots
+##  Screenshots
 
 
 
@@ -39,7 +39,7 @@ The game loop is divided into three crucial phases:
 ![image](./img/leaderboard.png)
 
 
-## 🚀 How to Run Locally
+## How to Run Locally
 
 The project uses the "two-server" pattern (separate frontend and backend). Make sure you have **Node.js (v24.x LTS)** installed.
 
@@ -64,7 +64,7 @@ npm run dev
 
 The client will be available at `http://localhost:5173` (or the port specified by Vite/React), while the API server will respond on its designated port (e.g., `3001`).
 
-## 📚 Main API Structure
+##  Main API Structure
 
 * `POST /api/sessions` - User authentication.
 * `GET /api/network` - Retrieve network topology (stations, lines, connections).
