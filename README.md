@@ -32,7 +32,12 @@ The game loop is divided into three crucial phases:
 
 ## 📸 Screenshots
 
-*(Replace the paths below with the actual links to your images inside the repository)*
+
+
+![image](./img/gameplay.png)
+
+![image](./img/leaderboard.png)
+
 
 ## 🚀 How to Run Locally
 
