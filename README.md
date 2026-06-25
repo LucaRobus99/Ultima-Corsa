@@ -1,77 +1,72 @@
-# Exam 1: "Ultima Corsa"
-## Student: s359863 Robustelli Luca 
+# Ultima Corsa Game
 
-## React Client Application Routes
+**Ultima Corsa** is an interactive Single-Page Application (SPA) built with React and Node.js. Developed as an advanced project during my Master's Degree in Computer Engineering, the game is a single-player management adventure inspired by the board game "Race the Rails". Players must plan optimal routes across a fictional subway network while managing random events and strict time limits.
 
-- Route `/`: Homepage and Autentication. If user is logged out it show login form. If logged in it show game rules and some buttons to navigate.
-- Route `/game`: Main game page (need login). It manage the game states (setup, planning, execution, result) and show the interactive subway map.
-- Route `/leaderboard`: Show the global leaderboard (need login), sort players by highest score in decending order.
+## Game Overview
 
-## API Server
+The player has to navigate a complex subway network featuring multiple lines and interchange stations. At the start of every game, a departure and destination station are randomly assigned.
 
-- `POST /api/sessions`: Authenticate user with `{ username, password }`.
-  * **Success** (`201`): Returns `{ username }`.
-  * **Errors**: `(400)` `{ error: "Username is required" }` (or Password); `(401)`: `{ error: "Not authenticated." }`.
+The game loop is divided into three crucial phases:
 
+1. **Setup:** Free exploration of the complete network map.
+2. **Planning (Time-Attack):** The player has 90 seconds to mentally reconstruct the network (which is only partially visible) and sequentially select the routes to reach their destination.
+3. **Execution:** The application algorithmically validates the path. If valid, the train departs: at each stop, the player faces random events (positive or negative) that will affect their final coin score.
 
-- `GET /api/sessions/current`: Get the active session.
-  * **Success** (`200`): Returns `{ username }`.
-  * **Errors**: `(401)`: `{ error: "Not authenticated." }`.
+## 💻 Tech Stack
 
+| Component | Technologies Used |
+| --- | --- |
+| **Front-end** | React, React Router, JavaScript (ES6+), Bootstrap, SVG (for custom map rendering) |
+| **Back-end** | Node.js, Express.js |
+| **Database** | SQLite |
+| **Authentication** | Passport.js (Session-based via Cookie), Salted Password Hashing |
+| **Architecture** | "Two-Server" Pattern, RESTful HTTP APIs, CORS |
 
-- `DELETE /api/sessions/current`: Destroy the active session.
-  * **Success** (`204`): Empty body. No errors expected.
+## ✨ Key Features & Technical Challenges
 
+* **Path Validation Engine:** Developed complex logic on both the client and server sides to ensure the submitted path is contiguous, respects line constraints, and correctly utilizes interchange hubs.
+* **Advanced React State Management:** Intensive use of contexts, hooks, and effects to manage the game lifecycle, including strict synchronization of the 90-second timer and phase transitions (Setup -> Planning -> Execution).
+* **Dynamic Vector Rendering:** The subway map is rendered using SVG components in React (`<line>`, `<circle>`), allowing for smooth interactivity and real-time highlighting of the user's selected route.
+* **Secure and Protected APIs:** Express-based backend architecture with route protection middleware. Access to gameplay features and the leaderboard is strictly limited to authenticated users.
+* **Global Leaderboard:** Persistent score tracking system in the SQLite database, with data extraction and sorting of the best results for the global ranking.
 
-- `GET /api/network`: Get the map topology (need login).
-  * **Success** (`200`): Returns `{ stations, lines, connections }`.
-  * **Errors**: `(401)`: `{ error: "Not authenticated." }`; `(500)`: `{ error: "Internal server error." }`.
+## 📸 Screenshots
 
+*(Replace the paths below with the actual links to your images inside the repository)*
 
-- `GET /api/game/planning`: Start a new game (need login).
-  * **Success** (`200`): Returns `{ startStation, endStation }`.
-  * **Errors**: `(401)`: `{ error: "Not authenticated." }`; `(500)`: `{ error: "Internal server error." }`.
+## 🚀 How to Run Locally
 
+The project uses the "two-server" pattern (separate frontend and backend). Make sure you have **Node.js (v24.x LTS)** installed.
 
-- `POST /api/game/execution`: Submit the user route `{ path: [id1, id2, ...] }` (need login).
-  * **Success** (`201`): Returns `{ journeyEvents: [...] }`.
-  * **Errors**: `(400)`: `{ error: "msg" }` where `msg` can be "The path must be an array", "Maximum time of 90 seconds exceeded...", "Invalid path...", etc; `(401)`: `{ error: "Not authenticated." }`; `(500)`: `{ error: "Internal server error." }`.
+**1. Start the Back-end (API Server):**
 
+```bash
+cd server
+npm install
+npm run dev # or nodemon index.js
 
-- `GET /api/leaderboard`: Get global rankings (need login).
-  * **Success** (`200`): Returns array of `{ username, bestScore }`.
-  * **Errors**: `(401)`: `{ error: "Not authenticated." }`; `(500)`: `{ error: "Internal server error." }`.
+```
 
-## Database Tables
+**2. Start the Front-end (React Client):**
 
-- Table `users`: Store user credential, including `username`, `password_hash`, and the cryptographic `salt`.
-- Table `lines`: Store subway lines name and id.
-- Table `stations`: Store subway stations name and id.
-- Table `connections`: Store the phisical tracks connecting `station_a_id` to `station_b_id` via `line_id`.
-- Table `events`: Contain random events, store `description` and coin `effect` (+/-).
-- Table `games`: Store the games results, link a `user_id` to the final `score`.
+```bash
+# In a new terminal window
+cd client
+npm install
+npm run dev
 
-## Main React Components
+```
 
-- `HomePage`: Welcome screen with rules and handle the login form (or show navigation if logged in).
-- `GamePage`: The main controller of game. Manage the 90s timer and 4 game states (setup, planning, execution, result).
-- `NetworkMap`: A SVG component that dynamicly draw the subway network and highlight user selected paths.
-- `SidePanels`: A group of panels (`SetupPanel`, `PlanningPanel`, `ExecutionPanel`, `ResultPanel`) that guide user step by step.
-- `Leaderboard`: Fetch and render a table of best scores achieved by players.
+The client will be available at `http://localhost:5173` (or the port specified by Vite/React), while the API server will respond on its designated port (e.g., `3001`).
 
-## Screenshots
+## 📚 Main API Structure
 
-![Planning Phase](./img/gameplay.png)
-![Global Leaderboard](./img/leaderboard.png)
+* `POST /api/sessions` - User authentication.
+* `GET /api/network` - Retrieve network topology (stations, lines, connections).
+* `GET /api/game/planning` - Initialize game and generate destinations.
+* `POST /api/game/execution` - Submit the path and resolve random events.
+* `GET /api/leaderboard` - Retrieve the global ranking.
 
-## Users Credentials
+---
 
-- `explorer_one`, `password1`
-- `explorer_two`, `password2`
-- `explorer_three`, `password3`
-
-## Use of AI Tools
-
-- **Gemini and Claude**: I used them to speed up UI development, they suggest Bootstrap classes and the use of HTML SVG tags (`<line>`, `<circle>`) to draw the map in React. The CSS and SVG was manualy tested and adapted for responsivness.
-- **ChatGPT**: I used ChatGPT to brainstorm a list of creative medieval/fantasy names for subway stations and lines to enhance game theme. Output was used to populate database.
-- **Prettier**: Used as code formater to ensure clean and profesional style.
+*Designed and developed by **Luca Robustelli**.*
